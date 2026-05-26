@@ -1,0 +1,115 @@
+# =============================================================================
+# CRITICAL: This is the HOME DIRECTORY git repo.
+# Any file NOT listed here or not explicitly tracked can accidentally be
+# committed. Be extremely cautious before running `git add .` from ~.
+# =============================================================================
+
+# --- macOS noise ---
+.DS_Store
+._*
+.Spotlight-V100
+.Trashes
+.smbdelete*
+
+# --- Secrets & credentials (NEVER commit these) ---
+.env
+.env.*
+*.env
+!*.env.example
+secrets/
+credentials/
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+id_rsa
+id_rsa.pub
+id_ed25519
+id_ed25519.pub
+known_hosts
+.ssh/
+.gnupg/
+.aws/
+.azure/
+.gcp/
+.docker/
+*.dockercfg
+.git-credentials
+.netrc
+.npmrc
+.pypirc
+
+# --- Cloud & tunnel credentials ---
+.cloudflared/*.json
+.cloudflared/*.pem
+!cloudflared/config.yml
+
+# --- Application configs with API keys ---
+**/config.xml
+**/settings.json
+**/appsettings.json
+**/*.config
+
+# --- Arr stack configs ---
+**/prowlarr/config.xml
+**/sonarr/config.xml
+**/radarr/config.xml
+**/lidarr/config.xml
+**/readarr/config.xml
+**/mylar3/config.ini
+**/bazarr/config/
+**/jellyseerr/settings.json
+**/qbittorrent/qBittorrent/*.conf
+**/slskd/slskd.yml
+
+# --- AI agent framework credentials ---
+.claude/skills/**/credentials/
+.claude/agents/**/credentials/
+.openclaw/**/credentials/
+.nexo/**/credentials/
+.hermes/**/credentials/
+.kimi*/**/credentials/
+.codex/**/credentials/
+
+# --- Database files ---
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
+
+# --- Docker runtime state ---
+*.log
+container-logs/
+
+# --- Node & Python environments ---
+node_modules/
+__pycache__/
+*.pyc
+.venv/
+venv/
+env/
+
+# --- Build artifacts ---
+dist/
+build/
+target/
+*.tar.gz
+*.zip
+
+# --- Backup files ---
+*.bak
+*.backup
+*.old
+*.prev
+
+# --- Temporary files ---
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+
+# --- Ignore everything in these top-level dirs unless explicitly allowed ---
+# (Add exceptions with !path/to/file when you intend to track something)
