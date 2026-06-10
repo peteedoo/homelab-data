@@ -136,6 +136,13 @@ body {
 }
 .letter p:last-of-type { margin-bottom: 0; }
 
+/* verse — stacked free-verse stanzas, journal cadence */
+.letter .verse {
+  max-width: 48ch;
+  line-height: 1.5;
+  margin-bottom: var(--space-lg);
+}
+
 .letter em { font-style: italic; }                /* body-copy emphasis only */
 .letter strong { font-weight: 600; color: var(--color-ink); }
 
@@ -231,19 +238,47 @@ body {
   <main class="letter">
     <h1 class="salutation">Hey yall,</h1>
 
-    <p>I'm petee. They/them — hidden in plain sight, mostly. I build things and I <strong>finish</strong> them, which turns out to be the rare part. Stoic as a joke, ironic by curse, absurd because nothing matters. You get used to it.</p>
+    <p>I'm petee. They/them — I let people get there on their own.</p>
 
-    <p>Most days that's dirt under the nails and a printer running past midnight. There's a 110-foot garden out back that eats whole weekends. A Creality K1C slowly turning half the house into printed brackets. A homelab downstairs that mostly stays up — Docker, a reverse proxy, a tunnel, a small script that texts me when it doesn't. And Mac Miller, usually <em>Circles</em>, on whatever's playing.</p>
+    <p class="verse">i think in seasons.<br>
+    things break, and things get mended —<br>
+    not with time, like they say,<br>
+    but with intention.</p>
+
+    <p class="verse">i spent a long time starting and not finishing.<br>
+    turns out that's wiring, not a character flaw,<br>
+    and wiring is workable.<br>
+    this page is me, finishing something.</p>
+
+    <p class="verse">i go to nature to get out of my own head.<br>
+    toes in the river, hands in the soil,<br>
+    a garden out back that eats my weekends,<br>
+    tomatoes i'm weirdly proud of.<br>
+    most days the noise in here is background.<br>
+    some days it's the main show.<br>
+    so i build to quiet it down —<br>
+    a homelab that runs the house,<br>
+    a small machine that remembers what i forget.</p>
 
     <p class="seam" aria-hidden="true">* * *</p>
 
-    <p>There's a working version of me too — supply chain, operations, the systems that keep things moving when nobody's watching. If that's what you came for, it lives next door.</p>
+    <p class="verse">there's a working version of me too.<br>
+    operations, supply chain, the part with a résumé.<br>
+    i came up from the floor of a soil company<br>
+    to running the whole thing,<br>
+    and learned to build the whole<br>
+    instead of patching the parts.<br>
+    if that's why you're here, it's next door.</p>
 
     <span class="door">
       <a href="https://iamfaulty.com">iamfaulty.com <span class="arr" aria-hidden="true">&rarr;</span></a>
     </span>
 
-    <p style="margin-top: var(--space-xl)">Otherwise — stick around. Pull a weed. Nothing matters. Do a good job anyway.</p>
+    <p class="verse" style="margin-top: var(--space-xl)">otherwise, stay a minute.<br>
+    i believe in the absurd.<br>
+    most things don't matter — and that's not despair,<br>
+    it's the freest thing i know.<br>
+    so: love intentionally. do a good job anyway.</p>
   </main>
 
   <footer class="close">
