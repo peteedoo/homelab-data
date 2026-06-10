@@ -1,0 +1,11 @@
+services:
+  petee-site:
+    image: nginx:alpine
+    container_name: petee-site
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:3009:80"
+    volumes:
+      - /Users/peteedoo/homelab-data/petee-site/html:/usr/share/nginx/html:ro
+    security_opt:
+      - no-new-privileges:true
