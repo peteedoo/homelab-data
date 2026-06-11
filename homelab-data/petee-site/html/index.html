@@ -14,7 +14,16 @@
  * contrast: pass (40–41) · honest: pass (46) · chrome: pass (47) · tokens: pass (48) · responsive: pass (49) · mobile: pass (34, 50–57)
  */
 
+/* Petee's actual handwriting — built from scanned sheets, traced locally. */
+@font-face {
+  font-family: "Petee Hand";
+  src: url("/fonts/PeteeHand.woff2?v=3") format("woff2"),
+       url("/fonts/PeteeHand.ttf?v=3") format("truetype");
+  font-display: swap;
+}
+
 :root {
+  --font-hand: "Petee Hand", "Young Serif", ui-serif, Georgia, serif;
   /* — Garden theme tokens — */
   --color-paper:    oklch(95.5% 0.022 92);
   --color-paper-2:  oklch(92.5% 0.026 92);
@@ -119,12 +128,12 @@ body {
 .letter { padding-block: var(--space-2xl) var(--space-3xl); }
 
 .salutation {
-  font-family: var(--font-display);
+  font-family: var(--font-hand);
   font-weight: 400;
   font-style: normal;            /* gate 38a — roman header */
-  font-size: var(--text-salutation);
+  font-size: calc(var(--text-salutation) * 1.15);
   line-height: var(--lh-tight);
-  letter-spacing: -0.01em;
+  letter-spacing: 0;
   color: var(--color-ink);
   margin-bottom: var(--space-lg);
 }
@@ -198,10 +207,10 @@ body {
   border-top: var(--rule-hair) solid var(--color-rule);
 }
 .signature {
-  font-family: var(--font-display);
+  font-family: var(--font-hand);
   font-weight: 400;
   font-style: normal;
-  font-size: var(--text-signature);
+  font-size: calc(var(--text-signature) * 1.2);
   line-height: 1.1;
   color: var(--color-ink);
 }

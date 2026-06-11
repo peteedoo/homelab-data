@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>petee-hand · sheet v2</title>
+<style>
+  @page { size: letter portrait; margin: 0.45in; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: "Helvetica Neue", Arial, sans-serif; color: #111; }
+
+  .intro { max-width: 7.6in; margin: 0 auto 0.12in; }
+  .intro h1 { font-size: 19px; letter-spacing: 0.4px; }
+  .intro p { font-size: 12.5px; line-height: 1.5; margin-top: 5px; color: #333; max-width: 64ch; }
+  .intro b { color: #000; }
+
+  /* ---- placement legend ---- */
+  .legend { max-width: 7.6in; margin: 0 auto 0.12in; border: 1px solid #ccc; border-radius: 6px;
+            display: flex; align-items: stretch; }
+  .legend .lab { font-size: 11px; color: #555; padding: 8px 12px; border-right: 1px solid #eee;
+                 display: flex; align-items: center; width: 1.7in; line-height: 1.4; }
+  .legend .demo { display: flex; flex: 1; }
+  .legend .dcell { position: relative; flex: 1; height: 0.85in; border-left: 1px solid #eef; }
+  .lcap  { position: absolute; left: 0; right: 0; top: 20%; border-top: 1px dashed #d3e6f4; }
+  .lxh   { position: absolute; left: 0; right: 0; top: 50%; border-top: 1px dashed #cfe2f2; }
+  .lbase { position: absolute; left: 0; right: 0; top: 80%; border-top: 1.5px solid #a8caea; }
+  .ldesc { position: absolute; left: 0; right: 0; top: 94%; border-top: 1px dashed #e3eef6; }
+  .legend .g { position: absolute; left: 0; right: 0; bottom: 6%; text-align: center;
+               font-size: 0.46in; line-height: 1; color: #1a1a1a; }
+  .legend .note { position: absolute; left: 3px; top: 2px; font-size: 9px; color: #4f9a92; }
+
+  /* ---- sheet grid ---- */
+  .sheet { position: relative; width: 7.6in; margin: 0 auto; padding: 0.2in; page-break-after: always; }
+  .sheet-label { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: #999; margin-bottom: 6px; }
+  .reg { position: absolute; width: 16px; height: 16px; }
+  .reg::before, .reg::after { content: ""; position: absolute; background: #000; }
+  .reg::before { left: 7px; top: 0; width: 2px; height: 16px; }
+  .reg::after  { top: 7px; left: 0; height: 2px; width: 16px; }
+  .reg.tl{top:0;left:0} .reg.tr{top:0;right:0} .reg.bl{bottom:0;left:0} .reg.br{bottom:0;right:0}
+
+  .grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 0; }
+  .cell { position: relative; height: 0.92in; border: 1px solid #b9d4ea; border-right: 0; border-bottom: 0; }
+  .grid .cell:nth-child(6n) { border-right: 1px solid #b9d4ea; }
+  .grid .cell:nth-last-child(-n+6) { border-bottom: 1px solid #b9d4ea; }
+  .cap  { position: absolute; left: 0; right: 0; top: 20%; border-top: 1px dashed #d3e6f4; }
+  .xh   { position: absolute; left: 0; right: 0; top: 50%; border-top: 1px dashed #cfe2f2; }
+  .base { position: absolute; left: 0; right: 0; top: 80%; border-top: 1.5px solid #a8caea; }
+  .desc { position: absolute; left: 0; right: 0; top: 94%; border-top: 1px dashed #e8f1f8; }
+  /* faint centred guide letter — write your own in black over it, same size + position */
+  .ref  { position: absolute; left: 0; right: 0; bottom: 6%; text-align: center;
+          font-size: 0.5in; line-height: 1; color: #dcdcdc; }
+
+  @media screen {
+    body { background: #f4f4f2; padding: 18px 0; }
+    .sheet, .legend, .intro { background: #fff; }
+    .noprint { max-width: 7.6in; margin: 0 auto 14px; }
+    .noprint button { font: inherit; padding: 9px 16px; border-radius: 7px; border: 0; background: #3f7d77; color: #fff; font-weight: 700; cursor: pointer; }
+  }
+  @media print { .noprint { display: none; } body { background: #fff; } }
+</style>
+</head>
+<body>
+
+<div class="noprint"><button onclick="window.print()">Print sheet</button></div>
+
+<div class="intro">
+  <h1>petee-hand — sheet v2</h1>
+  <p>Write each letter in <b>black fine-tip pen</b> directly <b>over the light-gray guide letter</b> — same size, <b>centered in the box</b>, sitting on the <b>solid line</b>. The gray guide and the blue lines don't show up in the font; only your black ink does. <b>Centering matters</b> — last time letters drifted to the right edge and got clipped.</p>
+</div>
+
+<div class="legend">
+  <div class="lab">How letters sit:<br>caps fill to the top line, small letters to the middle line, tails (g, y, p) hang below the solid line.</div>
+  <div class="demo">
+    <div class="dcell"><span class="note">CAP</span><span class="lcap"></span><span class="lxh"></span><span class="lbase"></span><span class="ldesc"></span><span class="g">A</span></div>
+    <div class="dcell"><span class="note">small</span><span class="lcap"></span><span class="lxh"></span><span class="lbase"></span><span class="ldesc"></span><span class="g">a</span></div>
+    <div class="dcell"><span class="note">tail</span><span class="lcap"></span><span class="lxh"></span><span class="lbase"></span><span class="ldesc"></span><span class="g">g</span></div>
+    <div class="dcell"><span class="note">ascender</span><span class="lcap"></span><span class="lxh"></span><span class="lbase"></span><span class="ldesc"></span><span class="g">h</span></div>
+  </div>
+</div>
+
+<div id="sheets"></div>
+
+<script>
+  const GLYPHS = [
+    ..."ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+    ..."abcdefghijklmnopqrstuvwxyz",
+    ..."0123456789",
+    ".", ",", "'", "\"", "!", "?", "-", ":", ";", "(", ")", "&", "/", "@"
+  ];
+  const PER_PAGE = 42, host = document.getElementById("sheets");
+  let page = 0;
+  for (let i = 0; i < GLYPHS.length; i += PER_PAGE) {
+    page++;
+    const chunk = GLYPHS.slice(i, i + PER_PAGE);
+    const s = document.createElement("div");
+    s.className = "sheet";
+    s.innerHTML =
+      '<div class="reg tl"></div><div class="reg tr"></div><div class="reg bl"></div><div class="reg br"></div>' +
+      '<div class="sheet-label">petee-hand v2 · page ' + page + '</div>' +
+      '<div class="grid">' + chunk.map(function (ch) {
+        const ref = ch === '"' ? '&quot;' : ch === '&' ? '&amp;' : ch === '<' ? '&lt;' : ch;
+        return '<div class="cell"><span class="cap"></span><span class="xh"></span>' +
+               '<span class="base"></span><span class="desc"></span>' +
+               '<span class="ref">' + ref + '</span></div>';
+      }).join("") + '</div>';
+    host.appendChild(s);
+  }
+</script>
+</body>
+</html>

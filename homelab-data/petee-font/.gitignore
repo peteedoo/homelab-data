@@ -1,0 +1,8 @@
+# transient build artifacts + raw scans (regenerable / large)
+__pycache__/
+scans/
+glyphs/
+build/*
+# keep the finished font
+!build/PeteeHand.ttf
+!build/PeteeHand.woff2

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>petee-hand · character sheet</title>
+<style>
+  @page { size: letter portrait; margin: 0.5in; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, "Helvetica Neue", Arial, sans-serif; color: #111; }
+
+  .intro { max-width: 7.5in; margin: 0 auto 0.3in; padding: 14px 0; }
+  .intro h1 { font-size: 20px; letter-spacing: 0.5px; }
+  .intro p { font-size: 12.5px; line-height: 1.5; margin-top: 6px; color: #333; max-width: 60ch; }
+  .intro ol { font-size: 12.5px; line-height: 1.55; margin: 8px 0 0 18px; color: #333; }
+  .intro b { color: #000; }
+
+  .sheet {
+    position: relative;
+    width: 7.5in;
+    margin: 0 auto;
+    padding: 0.22in;
+    page-break-after: always;
+  }
+  .sheet-label {
+    font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
+    color: #999; margin-bottom: 8px;
+  }
+
+  /* black registration crosses — survive thresholding, used to deskew + crop */
+  .reg { position: absolute; width: 16px; height: 16px; }
+  .reg::before, .reg::after { content: ""; position: absolute; background: #000; }
+  .reg::before { left: 7px; top: 0; width: 2px; height: 16px; }
+  .reg::after  { top: 7px; left: 0; height: 2px; width: 16px; }
+  .reg.tl { top: 0; left: 0; }
+  .reg.tr { top: 0; right: 0; }
+  .reg.bl { bottom: 0; left: 0; }
+  .reg.br { bottom: 0; right: 0; }
+
+  .grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 0; }
+
+  .cell {
+    position: relative;
+    height: 1.18in;
+    border: 1px solid #b9d4ea;          /* light blue — dropped in preprocessing */
+    border-right: 0; border-bottom: 0;
+  }
+  .grid .cell:nth-child(6n) { border-right: 1px solid #b9d4ea; }
+  .grid .cell:nth-last-child(-n+6) { border-bottom: 1px solid #b9d4ea; }
+
+  /* writing guides — light blue, non-repro */
+  .cell .cap   { position: absolute; left: 0; right: 0; top: 22%;  border-top: 1px dashed #d3e6f4; }
+  .cell .xh    { position: absolute; left: 0; right: 0; top: 50%;  border-top: 1px dashed #cfe2f2; }
+  .cell .base  { position: absolute; left: 0; right: 0; top: 78%;  border-top: 1px solid  #a8caea; }
+  .cell .tag   { position: absolute; left: 4px; top: 2px; font-size: 11px; color: #c7c7c7; font-weight: 600; }
+
+  @media screen {
+    body { background: #f4f4f2; padding: 20px 0; }
+    .sheet { background: #fff; box-shadow: 0 1px 6px rgba(0,0,0,.12); margin-bottom: 24px; }
+    .noprint { max-width: 7.5in; margin: 0 auto 16px; }
+    .noprint button { font: inherit; padding: 9px 16px; border-radius: 7px; border: 0; background: #3f7d77; color: #fff; font-weight: 700; cursor: pointer; }
+  }
+  @media print { .noprint { display: none; } }
+</style>
+</head>
+<body>
+
+<div class="noprint">
+  <button onclick="window.print()">Print this sheet</button>
+</div>
+
+<div class="intro">
+  <h1>petee-hand — character sheet</h1>
+  <p>Write each character <b>once</b> in its box, in a <b>black fine-tip pen</b> (Sharpie pen, Micron, or a gel pen — not pencil, not light blue).</p>
+  <ol>
+    <li>Sit each letter on the <b>solid line</b> (the baseline). Lowercase bodies fill up to the dashed middle line; tails like <i>g, y, p</i> hang below.</li>
+    <li>Write naturally — your hand, not careful printing. One clean version of each.</li>
+    <li>The light-blue lines and the little gray label won't show up in the font; only your black ink does.</li>
+    <li>When done, <b>scan</b> the pages (best) or <b>photograph flat</b> in even light, straight-on. Drop them in <b>~/homelab-data/petee-font/scans/</b> and tell me.</li>
+  </ol>
+</div>
+
+<div id="sheets"></div>
+
+<script>
+  const GLYPHS = [
+    ..."ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+    ..."abcdefghijklmnopqrstuvwxyz",
+    ..."0123456789",
+    ".", ",", "'", "\"", "!", "?", "-", "—", ":", ";",
+    "(", ")", "&", "/", "@", "#", "$", "%", "+", "="
+  ];
+  const PER_PAGE = 42;            // 6 cols × 7 rows
+  const host = document.getElementById("sheets");
+  let page = 0;
+  for (let i = 0; i < GLYPHS.length; i += PER_PAGE) {
+    page++;
+    const chunk = GLYPHS.slice(i, i + PER_PAGE);
+    const sheet = document.createElement("div");
+    sheet.className = "sheet";
+    sheet.innerHTML =
+      '<div class="reg tl"></div><div class="reg tr"></div>' +
+      '<div class="reg bl"></div><div class="reg br"></div>' +
+      '<div class="sheet-label">petee-hand · page ' + page + '</div>' +
+      '<div class="grid">' + chunk.map(function (g) {
+        const label = g === '"' ? '&quot;' : g === '&' ? '&amp;' : g === '<' ? '&lt;' : g;
+        return '<div class="cell"><span class="cap"></span><span class="xh"></span>' +
+               '<span class="base"></span><span class="tag">' + label + '</span></div>';
+      }).join("") + '</div>';
+    host.appendChild(sheet);
+  }
+</script>
+
+</body>
+</html>
