@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FocusFlow — ADHD Planner</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app">
+    <header class="app-header">
+      <h1>FocusFlow</h1>
+      <p class="tagline">Plan lightly. Focus on one thing.</p>
+    </header>
+
+    <nav class="tabs" role="tablist" aria-label="App views">
+      <button class="tab active" data-view="plan" role="tab" aria-selected="true">Plan</button>
+      <button class="tab" data-view="focus" role="tab" aria-selected="false">Focus</button>
+      <button class="tab" data-view="energy" role="tab" aria-selected="false">Energy</button>
+    </nav>
+
+    <main id="main">
+      <!-- Plan View -->
+      <section id="plan-view" class="view active" aria-labelledby="plan-tab">
+        <div class="card capture-card">
+          <h2>What's on your mind?</h2>
+          <form id="add-form" class="add-form">
+            <input
+              type="text"
+              id="new-task-title"
+              class="big-input"
+              placeholder="Type a task and press Enter..."
+              autocomplete="off"
+              aria-label="New task"
+            />
+            <div class="task-options">
+              <label>
+                Priority
+                <select id="new-task-priority" aria-label="Priority">
+                  <option value="3">High</option>
+                  <option value="2" selected>Medium</option>
+                  <option value="1">Low</option>
+                </select>
+              </label>
+              <label>
+                Energy
+                <select id="new-task-energy" aria-label="Energy level">
+                  <option value="high">High 🔥</option>
+                  <option value="medium" selected>Medium ☕</option>
+                  <option value="low">Low 🛋️</option>
+                </select>
+              </label>
+              <label>
+                Minutes
+                <input type="number" id="new-task-duration" min="1" max="480" value="15" aria-label="Estimated minutes">
+              </label>
+            </div>
+            <button type="submit" class="btn btn-primary">Add task</button>
+          </form>
+        </div>
+
+        <div class="card stats-card">
+          <div class="progress-area">
+            <div class="progress-text">
+              <span id="progress-label">0 done</span>
+              <span id="encouragement">You got this.</span>
+            </div>
+            <div class="progress-bar" aria-hidden="true">
+              <div id="progress-fill" class="progress-fill" style="width: 0%"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="toolbar">
+          <label class="filter">
+            Show:
+            <select id="filter-status">
+              <option value="active">Active</option>
+              <option value="done">Done</option>
+              <option value="all">All</option>
+            </select>
+          </label>
+          <button id="clear-done" class="btn btn-ghost" type="button">Clear done</button>
+        </div>
+
+        <ul id="task-list" class="task-list"></ul>
+      </section>
+
+      <!-- Focus View -->
+      <section id="focus-view" class="view" aria-labelledby="focus-tab">
+        <div class="card focus-card">
+          <h2>Your next step</h2>
+          <div id="focus-content">
+            <p class="empty">No active tasks. Add one in the Plan view.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Energy View -->
+      <section id="energy-view" class="view" aria-labelledby="energy-tab">
+        <div class="card energy-card">
+          <h2>How is your energy right now?</h2>
+          <div class="energy-choices">
+            <button class="energy-btn" data-energy="high" type="button">🔥 High energy</button>
+            <button class="energy-btn active" data-energy="medium" type="button">☕ Medium energy</button>
+            <button class="energy-btn" data-energy="low" type="button">🛋️ Low energy</button>
+          </div>
+          <p id="energy-summary" class="energy-summary">Showing tasks that fit medium energy.</p>
+          <ul id="energy-task-list" class="task-list"></ul>
+        </div>
+      </section>
+    </main>
+
+    <footer class="app-footer">
+      <button id="export-btn" class="btn btn-ghost" type="button">Export data</button>
+      <label class="btn btn-ghost file-btn">
+        Import data
+        <input type="file" id="import-btn" accept="application/json" hidden>
+      </label>
+    </footer>
+  </div>
+
+  <!-- Edit / break-down modal -->
+  <dialog id="task-modal" class="modal">
+    <form method="dialog" class="modal-form">
+      <h2>Edit task</h2>
+      <input type="text" id="edit-title" class="big-input" required>
+      <div class="task-options">
+        <label>
+          Priority
+          <select id="edit-priority">
+            <option value="3">High</option>
+            <option value="2">Medium</option>
+            <option value="1">Low</option>
+          </select>
+        </label>
+        <label>
+          Energy
+          <select id="edit-energy">
+            <option value="high">High</option>
+            <option value="medium">Medium</option>
+            <option value="low">Low</option>
+          </select>
+        </label>
+        <label>
+          Minutes
+          <input type="number" id="edit-duration" min="1" max="480">
+        </label>
+      </div>
+
+      <div class="subtask-area">
+        <h3>Subtasks</h3>
+        <ul id="edit-subtasks" class="subtask-list"></ul>
+        <div class="add-subtask">
+          <input type="text" id="new-subtask" placeholder="Add a small step...">
+          <button type="button" id="add-subtask-btn" class="btn btn-secondary">Add</button>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button type="submit" class="btn btn-primary">Save</button>
+        <button type="button" id="delete-task" class="btn btn-danger">Delete</button>
+        <button type="button" id="cancel-edit" class="btn btn-ghost">Cancel</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="app.js"></script>
+</body>
+</html>
