@@ -1,0 +1,1 @@
+../prowlarr-db-repair.sh
