@@ -3,8 +3,7 @@
 Queue of roles to apply to. Hermes reads this each morning and preps up to 10 Priority A roles.
 
 | Status | Priority | Company | Role | URL | Resume | Cover | Notes |
-|--------|----------|---------|------|-----|--------|-------|-------|
-| Ready | C | TestCo | TPM | https://example.com/test | resume-samsara-ats | none | Test row |
+|---|---|---|---|---|---|---|---|
 
 ## How to add a role
 
