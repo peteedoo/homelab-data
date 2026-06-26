@@ -2,6 +2,8 @@ import json
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
 
+DEFAULT_STATE_PATH = Path(__file__).parent / "state.json"
+
 
 @dataclass
 class State:
@@ -17,8 +19,8 @@ class State:
 
 
 class StateStore:
-    def __init__(self, path: Path):
-        self.path = path
+    def __init__(self, path: Path | None = None):
+        self.path = path or DEFAULT_STATE_PATH
 
     def load(self) -> State:
         if not self.path.exists():
