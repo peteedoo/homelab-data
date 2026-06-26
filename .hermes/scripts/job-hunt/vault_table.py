@@ -8,7 +8,7 @@ class Row:
     def get(self, key: str) -> str:
         return self.cells.get(key, "")
 
-    def set(self, key: str, value: str) -> None:
+    def update(self, key: str, value: str) -> None:
         self.cells[key] = value
 
 
@@ -27,11 +27,13 @@ class MarkdownTable:
             elif table_lines:
                 break
         if len(table_lines) < 2:
-            return cls([], [])
+            raise ValueError("Malformed markdown table")
         headers = [h.strip() for h in table_lines[0].split("|")[1:-1]]
         rows = []
         for line in table_lines[2:]:
             cells = [c.strip() for c in line.split("|")[1:-1]]
+            if len(cells) != len(headers):
+                raise ValueError("Row has wrong number of cells")
             rows.append(Row(dict(zip(headers, cells))))
         return cls(headers, rows)
 
@@ -46,7 +48,10 @@ class MarkdownTable:
 class VaultTable:
     def __init__(self, text: str):
         self.text = text
-        self.table = MarkdownTable.parse(text)
+        try:
+            self.table = MarkdownTable.parse(text)
+        except ValueError:
+            self.table = MarkdownTable([], [])
 
     def replace_table(self, new_table: MarkdownTable) -> str:
         lines = self.text.splitlines()

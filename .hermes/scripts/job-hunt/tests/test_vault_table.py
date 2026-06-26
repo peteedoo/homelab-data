@@ -1,3 +1,5 @@
+import pytest
+
 from vault_table import MarkdownTable, Row, VaultTable
 
 
@@ -14,13 +16,13 @@ def test_parse_simple_table():
     assert table.rows[1].get("Status") == "Prepped"
 
 
-def test_row_set_and_render():
+def test_row_update_and_render():
     text = """| Status | Company |
 |--------|---------|
 | Ready | Samsara |
 """
     table = MarkdownTable.parse(text)
-    table.rows[0].set("Status", "Prepped")
+    table.rows[0].update("Status", "Prepped")
     rendered = table.render()
     assert "| Prepped | Samsara |" in rendered
 
@@ -35,7 +37,7 @@ def test_vault_table_replace_preserves_surrounding_text():
 Some notes below.
 """
     vt = VaultTable(text)
-    vt.table.rows[0].set("Status", "Prepped")
+    vt.table.rows[0].update("Status", "Prepped")
     new_text = vt.replace_table(vt.table)
     assert "# Backlog" in new_text
     assert "| Prepped | Samsara |" in new_text
@@ -50,3 +52,18 @@ def test_vault_table_appends_if_no_table():
     new_text = vt.replace_table(vt.table)
     assert "| Status | Company |" in new_text
     assert "| Ready | Samsara |" in new_text
+
+
+def test_parse_malformed_table_too_few_lines():
+    text = "| Status | Company |\n"
+    with pytest.raises(ValueError, match="Malformed markdown table"):
+        MarkdownTable.parse(text)
+
+
+def test_parse_row_wrong_number_of_cells():
+    text = """| Status | Company |
+|--------|---------|
+| Ready |
+"""
+    with pytest.raises(ValueError, match="Row has wrong number of cells"):
+        MarkdownTable.parse(text)

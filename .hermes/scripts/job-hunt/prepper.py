@@ -37,12 +37,16 @@ class Prepper:
                 added += 1
         return current
 
+    def _asset_paths(self, row: Row) -> tuple[Path, Path]:
+        resume_src = self.career_root / f"{row.get('Resume')}{self.resume_extension}"
+        cover_src = self.career_root / f"{row.get('Cover')}{self.cover_extension}"
+        return resume_src, cover_src
+
     def missing_assets(self, row: Row) -> list[str]:
         missing = []
-        resume_src = self.career_root / f"{row.get('Resume')}{self.resume_extension}"
+        resume_src, cover_src = self._asset_paths(row)
         if not resume_src.exists():
             missing.append(str(resume_src))
-        cover_src = self.career_root / f"{row.get('Cover')}{self.cover_extension}"
         if not cover_src.exists():
             missing.append(str(cover_src))
         return missing
@@ -58,15 +62,27 @@ class Prepper:
         if self.missing_assets(row):
             return None
 
-        folder.mkdir(parents=True, exist_ok=True)
+        try:
+            folder.mkdir(parents=True, exist_ok=True)
+        except OSError as exc:
+            raise RuntimeError(f"I/O error for {folder}: {exc}") from exc
 
-        resume_src = self.career_root / f"{row.get('Resume')}{self.resume_extension}"
-        shutil.copy(resume_src, folder / f"resume{self.resume_extension}")
+        resume_src, cover_src = self._asset_paths(row)
 
-        cover_src = self.career_root / f"{row.get('Cover')}{self.cover_extension}"
-        shutil.copy(cover_src, folder / f"cover{self.cover_extension}")
+        try:
+            shutil.copy(resume_src, folder / f"resume{self.resume_extension}")
+        except OSError as exc:
+            raise RuntimeError(f"I/O error for {resume_src}: {exc}") from exc
 
-        (folder / "job_url.txt").write_text(row.get("URL"), encoding="utf-8")
+        try:
+            shutil.copy(cover_src, folder / f"cover{self.cover_extension}")
+        except OSError as exc:
+            raise RuntimeError(f"I/O error for {cover_src}: {exc}") from exc
+
+        try:
+            (folder / "job_url.txt").write_text(row.get("URL"), encoding="utf-8")
+        except OSError as exc:
+            raise RuntimeError(f"I/O error for {folder / 'job_url.txt'}: {exc}") from exc
 
         follow_up_date = self._add_business_days(today, self.follow_up_business_days)
         if self.follow_up_template:
@@ -85,6 +101,9 @@ I applied for the {row.get('Role')} role at {row.get('Company')} and wanted to f
 Best,
 Petee
 """
-        (folder / "follow_up.txt").write_text(follow_up_text, encoding="utf-8")
+        try:
+            (folder / "follow_up.txt").write_text(follow_up_text, encoding="utf-8")
+        except OSError as exc:
+            raise RuntimeError(f"I/O error for {folder / 'follow_up.txt'}: {exc}") from exc
 
         return folder

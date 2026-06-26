@@ -25,11 +25,22 @@ class StateStore:
     def load(self) -> State:
         if not self.path.exists():
             return State()
-        with open(self.path, "r", encoding="utf-8") as f:
-            data = json.load(f)
+        try:
+            with open(self.path, "r", encoding="utf-8") as f:
+                data = json.load(f)
+        except OSError as exc:
+            raise RuntimeError(f"I/O error for {self.path}: {exc}") from exc
+        except json.JSONDecodeError as exc:
+            raise RuntimeError(f"I/O error for {self.path}: {exc}") from exc
         return State(**data)
 
     def save(self, state: State) -> None:
-        self.path.parent.mkdir(parents=True, exist_ok=True)
-        with open(self.path, "w", encoding="utf-8") as f:
-            json.dump(asdict(state), f, indent=2)
+        try:
+            self.path.parent.mkdir(parents=True, exist_ok=True)
+        except OSError as exc:
+            raise RuntimeError(f"I/O error for {self.path.parent}: {exc}") from exc
+        try:
+            with open(self.path, "w", encoding="utf-8") as f:
+                json.dump(asdict(state), f, indent=2)
+        except OSError as exc:
+            raise RuntimeError(f"I/O error for {self.path}: {exc}") from exc
