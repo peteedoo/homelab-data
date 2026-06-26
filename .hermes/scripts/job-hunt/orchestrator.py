@@ -24,6 +24,11 @@ def select_rows(
     daily_limit: int,
     state,
 ) -> list[Row]:
+    """Return ready rows sorted by priority and capped per priority.
+
+    `daily_limit` is intentionally ignored here; it is enforced during
+    processing so that blocked rows do not consume a slot.
+    """
     selected = []
     for priority in priority_order:
         cap = priority_caps.get(priority, 0)
@@ -35,10 +40,7 @@ def select_rows(
         ]
         if cap > 0:
             priority_rows = priority_rows[:cap]
-        remaining = daily_limit - len(selected)
-        selected.extend(priority_rows[:remaining])
-        if len(selected) >= daily_limit:
-            break
+        selected.extend(priority_rows)
     return selected
 
 
@@ -77,7 +79,7 @@ def run(config: dict, dry_run: bool) -> None:
         if r.get("Status").strip().lower() == "ready"
     ]
 
-    selected = select_rows(
+    capped_rows = select_rows(
         ready_rows,
         config["priority_order"],
         config.get("priority_caps", {}),
@@ -101,10 +103,16 @@ def run(config: dict, dry_run: bool) -> None:
     prepped_items = []
     blocked_items = []
 
-    for row in selected:
+    for row in capped_rows:
         url = row.get("URL").strip()
         company = row.get("Company")
         role = row.get("Role")
+
+        if state.is_prepped(url):
+            continue
+
+        if len(prepped_items) >= config["daily_limit"]:
+            break
 
         if dry_run:
             print(f"[dry-run] Would prep: {company} — {role}")
@@ -153,6 +161,7 @@ def run(config: dict, dry_run: bool) -> None:
             encoding="utf-8",
         )
 
+        state.last_run = today.isoformat()
         state_store.save(state)
         print(f"Prepped {len(prepped_items)} role(s).")
         if blocked_items:
