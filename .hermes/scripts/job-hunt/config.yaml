@@ -14,9 +14,9 @@ priority_order:
   - "C"
 
 priority_caps:
-  A: 10
-  B: 0
-  C: 0
+  A: 10   # 0 = unlimited for this priority
+  B: 0    # 0 = unlimited for this priority
+  C: 0    # 0 = unlimited for this priority
 
 follow_up_business_days: 5
 resume_extension: ".pdf"

@@ -1,6 +1,7 @@
 # ~/.hermes/scripts/job-hunt/orchestrator.py
 import argparse
 import shutil
+import sys
 from datetime import date
 from pathlib import Path
 
@@ -21,23 +22,27 @@ def select_rows(
     rows: list[Row],
     priority_order: list[str],
     priority_caps: dict[str, int],
-    daily_limit: int,
     state,
 ) -> list[Row]:
     """Return ready rows sorted by priority and capped per priority.
 
-    `daily_limit` is intentionally ignored here; it is enforced during
-    processing so that blocked rows do not consume a slot.
+    A cap of ``0`` or a missing priority key means "unlimited" for that
+    priority. The overall daily limit is enforced during processing so that
+    blocked rows do not consume a slot.
     """
     selected = []
     for priority in priority_order:
         cap = priority_caps.get(priority, 0)
-        priority_rows = [
-            r for r in rows
-            if r.get("Priority") == priority
-            and r.get("URL").strip()
-            and not state.is_prepped(r.get("URL").strip())
-        ]
+        priority_rows = []
+        for r in rows:
+            if r.get("Priority") != priority:
+                continue
+            url = r.get("URL").strip()
+            if not url:
+                continue
+            if state.is_prepped(url):
+                continue
+            priority_rows.append(r)
         if cap > 0:
             priority_rows = priority_rows[:cap]
         selected.extend(priority_rows)
@@ -83,7 +88,6 @@ def run(config: dict, dry_run: bool) -> None:
         ready_rows,
         config["priority_order"],
         config.get("priority_caps", {}),
-        config["daily_limit"],
         state,
     )
 
@@ -102,6 +106,10 @@ def run(config: dict, dry_run: bool) -> None:
 
     prepped_items = []
     blocked_items = []
+
+    if not dry_run:
+        shutil.copy(backlog_path, backlog_path.with_suffix(".md.bak"))
+        shutil.copy(tracker_path, tracker_path.with_suffix(".md.bak"))
 
     for row in capped_rows:
         url = row.get("URL").strip()
@@ -137,7 +145,7 @@ def run(config: dict, dry_run: bool) -> None:
         row.update("Status", "Prepped")
         state.mark_prepped(url)
 
-        follow_up_date = prepper._add_business_days(today, config["follow_up_business_days"])
+        follow_up_date = prepper.follow_up_date(today)
         tracker_vt.table.rows.append(build_tracker_row(row, today, follow_up_date))
 
         prepped_items.append({
@@ -149,9 +157,6 @@ def run(config: dict, dry_run: bool) -> None:
         })
 
     if not dry_run:
-        shutil.copy(backlog_path, backlog_path.with_suffix(".md.bak"))
-        shutil.copy(tracker_path, tracker_path.with_suffix(".md.bak"))
-
         backlog_path.write_text(backlog_vt.replace_table(backlog_vt.table), encoding="utf-8")
         tracker_path.write_text(tracker_vt.replace_table(tracker_vt.table), encoding="utf-8")
 
@@ -177,8 +182,18 @@ def main() -> None:
     parser.add_argument("--dry-run", action="store_true")
     args = parser.parse_args()
 
-    config = load_config(Path(args.config).expanduser())
-    run(config, args.dry_run)
+    try:
+        config = load_config(Path(args.config).expanduser())
+        run(config, args.dry_run)
+    except FileNotFoundError as exc:
+        print(f"Error: {exc}", file=sys.stderr)
+        sys.exit(1)
+    except yaml.YAMLError as exc:
+        print(f"Error: invalid YAML in config - {exc}", file=sys.stderr)
+        sys.exit(1)
+    except RuntimeError as exc:
+        print(f"Error: {exc}", file=sys.stderr)
+        sys.exit(1)
 
 
 if __name__ == "__main__":

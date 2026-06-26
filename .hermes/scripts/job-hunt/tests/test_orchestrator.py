@@ -14,7 +14,7 @@ def test_select_rows_ignores_daily_limit():
         Row({"Priority": "A", "URL": "https://a2", "Company": "A2", "Role": "R"}),
         Row({"Priority": "B", "URL": "https://b1", "Company": "B1", "Role": "R"}),
     ]
-    selected = select_rows(rows, ["A", "B", "C"], {"A": 0, "B": 0, "C": 0}, 1, state)
+    selected = select_rows(rows, ["A", "B", "C"], {"A": 0, "B": 0, "C": 0}, state)
     assert len(selected) == 3
     assert selected[0].get("Company") == "A1"
     assert selected[1].get("Company") == "A2"
@@ -28,7 +28,7 @@ def test_select_rows_skips_prepped():
         Row({"Priority": "A", "URL": "https://a1", "Company": "A1", "Role": "R"}),
         Row({"Priority": "A", "URL": "https://a2", "Company": "A2", "Role": "R"}),
     ]
-    selected = select_rows(rows, ["A", "B", "C"], {"A": 0, "B": 0, "C": 0}, 10, state)
+    selected = select_rows(rows, ["A", "B", "C"], {"A": 0, "B": 0, "C": 0}, state)
     assert len(selected) == 1
     assert selected[0].get("Company") == "A2"
 
@@ -42,7 +42,7 @@ def test_select_rows_respects_priority_caps():
         Row({"Priority": "B", "URL": "https://b2", "Company": "B2", "Role": "R"}),
         Row({"Priority": "C", "URL": "https://c1", "Company": "C1", "Role": "R"}),
     ]
-    selected = select_rows(rows, ["A", "B", "C"], {"A": 1, "B": 1, "C": 0}, 10, state)
+    selected = select_rows(rows, ["A", "B", "C"], {"A": 1, "B": 1, "C": 0}, state)
     assert len(selected) == 3
     assert selected[0].get("Priority") == "A"
     assert selected[1].get("Priority") == "B"
@@ -55,8 +55,20 @@ def test_select_rows_priority_caps_trumps_daily_limit():
         Row({"Priority": "A", "URL": f"https://a{i}", "Company": f"A{i}", "Role": "R"})
         for i in range(1, 6)
     ]
-    selected = select_rows(rows, ["A", "B", "C"], {"A": 10, "B": 0, "C": 0}, 3, state)
+    selected = select_rows(rows, ["A", "B", "C"], {"A": 10, "B": 0, "C": 0}, state)
     assert len(selected) == 5
+
+
+def test_select_rows_skips_blank_urls():
+    state = State()
+    rows = [
+        Row({"Priority": "A", "URL": "", "Company": "Blank", "Role": "R"}),
+        Row({"Priority": "A", "URL": "   ", "Company": "Spaces", "Role": "R"}),
+        Row({"Priority": "A", "URL": "https://valid", "Company": "Valid", "Role": "R"}),
+    ]
+    selected = select_rows(rows, ["A"], {"A": 0}, state)
+    assert len(selected) == 1
+    assert selected[0].get("Company") == "Valid"
 
 
 def test_load_config_reads_yaml():

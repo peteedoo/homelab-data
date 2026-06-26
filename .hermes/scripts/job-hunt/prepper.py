@@ -37,6 +37,9 @@ class Prepper:
                 added += 1
         return current
 
+    def follow_up_date(self, today: date) -> date:
+        return self._add_business_days(today, self.follow_up_business_days)
+
     def _asset_paths(self, row: Row) -> tuple[Path, Path]:
         resume_src = self.career_root / f"{row.get('Resume')}{self.resume_extension}"
         cover_src = self.career_root / f"{row.get('Cover')}{self.cover_extension}"
