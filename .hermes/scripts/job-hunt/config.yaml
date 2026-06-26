@@ -1,0 +1,18 @@
+vault_root: "/Users/peteedoo/Documents/Obsidian/Vault"
+career_root: "/Users/peteedoo/ops/career"
+scripts_root: "/Users/peteedoo/.hermes/scripts/job-hunt"
+
+backlog_path: "03 - Areas/Career & Job Hunt/Job Backlog.md"
+tracker_path: "03 - Areas/Career & Job Hunt/Application Tracker.md"
+daily_note_path_template: "06 - Daily/{date} — Job Hunt.md"
+applications_dir: "applications"
+
+daily_limit: 10
+priority_order:
+  - "A"
+  - "B"
+  - "C"
+
+follow_up_business_days: 5
+resume_extension: ".pdf"
+cover_extension: ".pdf"
