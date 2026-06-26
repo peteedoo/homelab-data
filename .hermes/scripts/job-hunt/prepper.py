@@ -50,7 +50,7 @@ class Prepper:
         resume_src, cover_src = self._asset_paths(row)
         if not resume_src.exists():
             missing.append(str(resume_src))
-        if not cover_src.exists():
+        if row.get("Cover").strip() and not cover_src.exists():
             missing.append(str(cover_src))
         return missing
 
@@ -77,10 +77,11 @@ class Prepper:
         except OSError as exc:
             raise RuntimeError(f"I/O error for {resume_src}: {exc}") from exc
 
-        try:
-            shutil.copy(cover_src, folder / f"cover{self.cover_extension}")
-        except OSError as exc:
-            raise RuntimeError(f"I/O error for {cover_src}: {exc}") from exc
+        if row.get("Cover").strip():
+            try:
+                shutil.copy(cover_src, folder / f"cover{self.cover_extension}")
+            except OSError as exc:
+                raise RuntimeError(f"I/O error for {cover_src}: {exc}") from exc
 
         try:
             (folder / "job_url.txt").write_text(row.get("URL"), encoding="utf-8")
