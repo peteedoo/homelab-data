@@ -52,7 +52,13 @@ def test_prep_skips_missing_assets():
             "Resume": "missing",
             "Cover": "missing",
         })
-        folder = prepper.prep(row, date(2026, 6, 25))
-        assert not (folder / "resume.pdf").exists()
-        assert not (folder / "cover.pdf").exists()
-        assert (folder / "job_url.txt").exists()
+        result = prepper.prep(row, date(2026, 6, 25))
+        assert result is None
+        assert prepper.missing_assets(row) != []
+        folder = (
+            career
+            / "applications"
+            / date(2026, 6, 25).isoformat()
+            / "Ghost-Dev"
+        )
+        assert not folder.exists()

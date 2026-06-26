@@ -13,6 +13,21 @@ priority_order:
   - "B"
   - "C"
 
+priority_caps:
+  A: 10
+  B: 0
+  C: 0
+
 follow_up_business_days: 5
 resume_extension: ".pdf"
 cover_extension: ".pdf"
+
+follow_up_template: |
+  Follow up on {follow_up_date}
+
+  Hi [NAME],
+
+  I applied for the {role} role at {company} and wanted to follow up.
+
+  Best,
+  Petee
